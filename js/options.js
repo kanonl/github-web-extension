@@ -53,7 +53,7 @@ document.querySelector('form').addEventListener('submit', async (event) => {
     let config = { access_token, username, refresh_interval, track, updated };
 
     await browser.storage.local.set({ config });
-    await browser.runtime.sendMessage({ sender: 'options', event: 'save' });
+    await browser.runtime.sendMessage({ sender: 'options', event: 'save' });//
 });
 
 // Load
