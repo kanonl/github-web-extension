@@ -27,6 +27,7 @@ import { getCommits } from './modules/service.js';
   });
 
   browser.alarms.onAlarm.addListener(async () => {
+    console.log(config.track);
     let commits = await getCommits(config);
     if (commits.ok) {
       let data = [];

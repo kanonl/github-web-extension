@@ -11,7 +11,7 @@
   }
 
   for (let i = 0; i < data.length; i++) {
-    let { login, name, date, message, html_url, avatar_url, branch } = data[i];
+    let { login, name, date, message, html_url, avatar_url, branch, commit_url } = data[i];
     let template = document.querySelector("#commititem");
     const clone = template.content.cloneNode(true);
 
@@ -20,6 +20,7 @@
     let branchEl = clone.querySelector('.branch');
 
     commitEl.querySelector('.commit-message').innerHTML = message;
+    commitEl.querySelector('.commit-message').addEventListener('click', async (event) => await browser.tabs.create({ active: true, url: commit_url }));
 
     if (login && html_url && avatar_url) {
       authorEl.querySelector('a').innerHTML = login;

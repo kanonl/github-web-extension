@@ -47,9 +47,10 @@ document.querySelector('form').addEventListener('submit', async (event) => {
     let access_token = document.querySelector("#accesstoken").value;
     let username = document.querySelector("#username").value;
     let refresh_interval = parseInt(document.querySelector("#interval").value);
+    let updated = Date.now();
     let track = await getRepoData({ access_token, username });
 
-    let config = { access_token, username, refresh_interval, track };
+    let config = { access_token, username, refresh_interval, track, updated };
 
     await browser.storage.local.set({ config });
     await browser.runtime.sendMessage({ sender: 'options', event: 'save' });
