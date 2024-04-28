@@ -12,7 +12,7 @@
     "service_worker": "background.js",
     "type": "module"
   },
-  "options_page": "options/options.html",
+  "options_page": "options.html",
   "action": {
     "default_title": "GitHub Event",
     "default_popup": "popup.html",

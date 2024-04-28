@@ -32,7 +32,7 @@ import { getCommits } from './modules/service.js';
       let notifications = data.filter(x => (new Date(x.date)).getTime() > config.updated);
 
       // Save new commit data and updated time to configuration
-      config.updated = Date.now(); console.log(config);
+      config.updated = Date.now();
       await browser.storage.local.set({ data, config });
 
       // Create notifications

@@ -6,8 +6,8 @@ let branches;
 let browser = chrome || browser;
 
 // Save
-document.querySelector('form').addEventListener('submit', async function (e) {
-    e.preventDefault();
+document.querySelector('form').addEventListener('submit', async (event) => {
+    event.preventDefault();
 
     let access_token = document.querySelector("#accesstoken").value;
     let username = document.querySelector("#username").value;
@@ -20,7 +20,7 @@ document.querySelector('form').addEventListener('submit', async function (e) {
 });
 
 // Load
-document.addEventListener('DOMContentLoaded', async function () {
+document.addEventListener('DOMContentLoaded', async () => {
     let { config } = await browser.storage.local.get('config');
 
     if (config) {
@@ -35,15 +35,27 @@ document.addEventListener('DOMContentLoaded', async function () {
                 clone.querySelector('.organization').value = t.organization;
                 clone.querySelector('.repository').value = t.repository;
                 clone.querySelector('.branch').value = t.branch;
-                clone.querySelector('.sha').innerHTML = t.sha;
+                // clone.querySelector('.sha').innerHTML = t.sha;
+                clone.querySelector('.removeRepo').addEventListener('click', (event) => {
+                    removeRow(event.target.parentNode);
+                });
                 document.querySelector('.repos').appendChild(clone);
             });
         }
     }
 });
 
+const removeRow = (node) =>{
+    if (node.classList.contains('row')){
+        node.remove();
+    }
+    else{
+        removeRow(node.parentNode);
+    }
+}
+
 // Add new tracking row
-document.querySelector('#addRepo').addEventListener('click', function (e) {
+document.querySelector('#addRepo').addEventListener('click', (event) => {
     let template = document.querySelector("#reporow");
     const clone = template.content.cloneNode(true);
     document.querySelector('.repos').appendChild(clone);
