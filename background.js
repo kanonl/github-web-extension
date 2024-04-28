@@ -7,7 +7,24 @@ import { getCommits } from './modules/service.js';
   let browser = chrome || browser;
   let { config } = await browser.storage.local.get('config');
 
-  setAlarm(config.refresh_interval);
+  if (config) {
+    setAlarm(config.refresh_interval);
+    console.log(`Alarm: ${config.refresh_interval}`);
+  }
+  else {
+    console.log('Configuration not found.');
+  }
+
+  browser.runtime.onMessage.addListener(async function (request, sender, sendResponse) {
+    if (request.sender === 'options') {
+      if (request.event === 'save') {
+        config = (await browser.storage.local.get('config')).config;
+        setAlarm(config.refresh_interval);
+        console.log('Configuration updated. Alarm reset.');
+      }
+    }
+    sendResponse();
+  });
 
   browser.alarms.onAlarm.addListener(async () => {
     let commits = await getCommits(config);
@@ -55,13 +72,8 @@ import { getCommits } from './modules/service.js';
   });
 
   function setAlarm(periodInMinutes) {
-    clearAlarm();
-
-    browser.alarms.create({ periodInMinutes });
-  }
-
-  function clearAlarm() {
     browser.alarms.clearAll();
+    browser.alarms.create({ periodInMinutes });
   }
 
 })();

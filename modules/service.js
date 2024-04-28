@@ -66,7 +66,6 @@ const getCommits = async (config) => {
 }
 
 const getBranches = async (config) => {
-    console.log('getBranches');
     let url = getFetchUrl('branches');
     let params = new URLSearchParams();
     // params.set('protected', true);

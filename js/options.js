@@ -5,6 +5,41 @@ import { getBranches } from '../modules/service.js';
 let branches;
 let browser = chrome || browser;
 
+const removeRow = (node) => {
+    if (node.classList.contains('row')) {
+        node.remove();
+    }
+    else {
+        removeRow(node.parentNode);
+    }
+}
+
+const addRow = () => {
+    let template = document.querySelector("#reporow");
+    const clone = template.content.cloneNode(true);
+    clone.querySelector('.removeRepo').addEventListener('click', (event) => removeRow(event.target.parentNode));
+    document.querySelector('.repos').appendChild(clone);
+}
+
+const getRepoData = async (config) => {
+    branches ??= await getBranches(config);
+    let rows = document.querySelectorAll('.repos .row');
+    let repos = [];
+    rows.forEach(async row => {
+        let organization = row.querySelector('.organization').value;
+        let repository = row.querySelector('.repository').value;
+        let branch = row.querySelector('.branch').value;
+        let sha = branches.data.find(b => b.name === branch)?.commit.sha ?? '';
+
+        if (organization.length == 0 || repository.length == 0) {
+            return;
+        }
+
+        repos.push({ organization, repository, branch, sha });
+    });
+    return repos;
+}
+
 // Save
 document.querySelector('form').addEventListener('submit', async (event) => {
     event.preventDefault();
@@ -16,7 +51,8 @@ document.querySelector('form').addEventListener('submit', async (event) => {
 
     let config = { access_token, username, refresh_interval, track };
 
-    browser.storage.local.set({ config });
+    await browser.storage.local.set({ config });
+    await browser.runtime.sendMessage({ sender: 'options', event: 'save' });
 });
 
 // Load
@@ -45,37 +81,5 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 });
 
-const removeRow = (node) =>{
-    if (node.classList.contains('row')){
-        node.remove();
-    }
-    else{
-        removeRow(node.parentNode);
-    }
-}
-
 // Add new tracking row
-document.querySelector('#addRepo').addEventListener('click', (event) => {
-    let template = document.querySelector("#reporow");
-    const clone = template.content.cloneNode(true);
-    document.querySelector('.repos').appendChild(clone);
-});
-
-const getRepoData = async (config) => {
-    branches ??= await getBranches(config);
-    let rows = document.querySelectorAll('.repos .row');
-    let repos = [];
-    rows.forEach(async row => {
-        let organization = row.querySelector('.organization').value;
-        let repository = row.querySelector('.repository').value;
-        let branch = row.querySelector('.branch').value;
-        let sha = branches.data.find(b => b.name === branch)?.commit.sha ?? '';
-
-        if (organization.length == 0 || repository.length == 0) {
-            return;
-        }
-
-        repos.push({ organization, repository, branch, sha });
-    });
-    return repos;
-}
+document.querySelector('#addRepo').addEventListener('click', addRow);

@@ -5,6 +5,11 @@
   let browser = chrome || browser;
   let { data } = await browser.storage.local.get('data');
 
+  if (!data) {
+    browser.runtime.openOptionsPage();
+    return;
+  }
+
   for (let i = 0; i < data.length; i++) {
     let { login, name, date, message, html_url, avatar_url, branch } = data[i];
     let template = document.querySelector("#commititem");
