@@ -53,7 +53,7 @@ document.querySelector('form').addEventListener('submit', async (event) => {
     let config = { access_token, username, refresh_interval, track, updated };
 
     await browser.storage.local.set({ config });
-    await browser.runtime.sendMessage({ sender: 'options', event: 'save' });//
+    await browser.runtime.sendMessage({ sender: 'options', event: 'OPTIONS_SAVE' });
 });
 
 // Load
@@ -80,7 +80,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             });
         }
     }
-});
 
-// Add new tracking row
-document.querySelector('#addRepo').addEventListener('click', addRow);
+    document.querySelector('#addRepo').addEventListener('click', addRow);
+});

@@ -1,4 +1,9 @@
+html {
+    scrollbar-gutter: stable;
+}
+
 body {
+    font-size: 14px;
     font-family: 'Aptos', 'Calibri', sans-serif;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
@@ -9,6 +14,7 @@ main {
     display: flex;
     flex-direction: column;
     row-gap: 1rem;
+    width: 300px;
     min-width: 300px;
 }
 
@@ -54,9 +60,9 @@ main {
 }
 
 .commit .commit-message {
-    font-size: 14px;
     color: #1f2328;
-    font-weight: 500;
+    cursor: pointer;
+    font-weight: 600;
 }
 
 .octicon {
@@ -69,6 +75,14 @@ main {
 .branch {
     border: 1px solid #EEEEEE;
     border-radius: 6px;
+    font-size: 12px;
     padding: 2px 6px;
     background-color: #EEEEEE;
+}
+
+.last-updated {
+    font-size: 10px;
+    text-align: center;
+    color: gray;
+    display: none;
 }
