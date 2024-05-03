@@ -2,11 +2,10 @@
 
 (async () => {
 
-    let browser = chrome || browser;
-    let { data } = await browser.storage.local.get('data');
+    let { data } = await chrome.storage.local.get('data');
 
     if (!data) {
-        browser.runtime.openOptionsPage();
+        chrome.runtime.openOptionsPage();
         return;
     }
 
@@ -23,7 +22,7 @@
         let branchEl = clone.querySelector('.branch');
 
         commitEl.querySelector('.commit-message').innerHTML = message;
-        commitEl.querySelector('.commit-message').addEventListener('click', async (event) => await browser.tabs.create({ active: true, url: commit_url }));
+        commitEl.querySelector('.commit-message').addEventListener('click', async (event) => await chrome.tabs.create({ active: true, url: commit_url }));
 
         if (login && html_url && avatar_url) {
             authorEl.querySelector('a').innerHTML = login;
@@ -44,15 +43,15 @@
     }
 
     async function setLastUpdated() {
-        let lastUpdated = await browser.runtime.sendMessage({ sender: 'popup', event: 'LAST_UPDATED' });
+        let lastUpdated = await chrome.runtime.sendMessage({ sender: 'popup', event: 'LAST_UPDATED' });
         let d = new Date(lastUpdated);
         document.querySelector('.last-updated').innerHTML = `Updated: ${d.toLocaleString()}`;
     }
 
     async function clearBadgeText() {
-        let badgeText = await browser.action.getBadgeText({});
+        let badgeText = await chrome.action.getBadgeText({});
         if (badgeText !== '') {
-            await browser.runtime.sendMessage({ sender: 'popup', event: 'SET_BADGE_TEXT', data: '' });
+            await chrome.runtime.sendMessage({ sender: 'popup', event: 'SET_BADGE_TEXT', data: '' });
         }
     }
 

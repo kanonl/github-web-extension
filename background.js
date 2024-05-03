@@ -2,13 +2,10 @@
 
 import { getCommits } from './modules/service.js';
 
-let browser = chrome || browser;
-
 (async () => await startup())();
 
-browser.runtime.onMessage.addListener(async function (request, sender, sendResponse) {
-    let browser = chrome || browser;
-    let { config } = await browser.storage.local.get('config');
+chrome.runtime.onMessage.addListener(async function (request, sender, sendResponse) {
+    let { config } = await chrome.storage.local.get('config');
 
     if (request.sender === 'options') {
         if (request.event === 'OPTIONS_SAVE') {
@@ -28,13 +25,12 @@ browser.runtime.onMessage.addListener(async function (request, sender, sendRespo
     }
 });
 
-browser.alarms.onAlarm.addListener(onAlarmEventHandler);
+chrome.alarms.onAlarm.addListener(onAlarmEventHandler);
 
-browser.notifications.onButtonClicked.addListener(async (url) => await browser.tabs.create({ active: true, url }));
+chrome.notifications.onButtonClicked.addListener(async (url) => await chrome.tabs.create({ active: true, url }));
 
 async function onAlarmEventHandler(alarm) {
-    let browser = chrome || browser;
-    let { config } = await browser.storage.local.get('config');
+    let { config } = await chrome.storage.local.get('config');
 
     let commits = await getCommits(config);
 
@@ -60,7 +56,7 @@ async function onAlarmEventHandler(alarm) {
 
         // Save new commit data and updated time to configuration
         config.updated = (data.length > 0) ? (new Date(data[0].date)).getTime() : Date.now();
-        await browser.storage.local.set({ data, config });
+        await chrome.storage.local.set({ data, config });
 
         // Set new commits badge count & title
         updateBrowserActionBadgeText(notifications.length);
@@ -72,28 +68,26 @@ async function onAlarmEventHandler(alarm) {
 }
 
 async function setAlarm(periodInMinutes) {
-    let browser = chrome || browser;
-
-    await browser.alarms.clearAll();
-    await browser.alarms.create('github', { periodInMinutes });
-    // await browser.alarms.create('alarm1', { periodInMinutes: periodInMinutes * 1.25 });
-    await browser.alarms.create('alarm2', { periodInMinutes: periodInMinutes * 1.5 });
-    // await browser.alarms.create('alarm3', { periodInMinutes: periodInMinutes * 1.75 });
+    await chrome.alarms.clearAll();
+    await chrome.alarms.create('github', { periodInMinutes });
+    // await chrome.alarms.create('alarm1', { periodInMinutes: periodInMinutes * 1.25 });
+    await chrome.alarms.create('alarm2', { periodInMinutes: periodInMinutes * 1.5 });
+    // await chrome.alarms.create('alarm3', { periodInMinutes: periodInMinutes * 1.75 });
 
     console.log(`[${(new Date()).toLocaleString()}] Alarm: ${periodInMinutes}`);
 }
 
 async function setBrowserActionBadgeTitle(updated) {
     let d = new Date(updated);
-    await browser.action.setTitle({ title: d.toLocaleString() });
+    await chrome.action.setTitle({ title: d.toLocaleString() });
 }
 
 async function setBrowserActionBadgeText(text, backgroundColor, textColor) {
     let bColor = backgroundColor || '#28a745';
     let tColor = textColor || 'white';
-    await browser.action.setBadgeText({ text });
-    await browser.action.setBadgeBackgroundColor({ color: bColor });
-    await browser.action.setBadgeTextColor({ color: tColor });
+    await chrome.action.setBadgeText({ text });
+    await chrome.action.setBadgeBackgroundColor({ color: bColor });
+    await chrome.action.setBadgeTextColor({ color: tColor });
 }
 
 async function updateBrowserActionBadgeText(count) {
@@ -108,8 +102,6 @@ async function createNewCommitNotifications(notifications) {
         Firefox currently: only supports the type, title, message, and iconUrl properties; and the only supported value for type is 'basic'.
     */
 
-    let browser = chrome || browser;
-
     for (let i = 0; i < notifications.length; i++) {
         let notificationOptions = {
             type: 'basic',
@@ -122,21 +114,20 @@ async function createNewCommitNotifications(notifications) {
         };
 
         try {
-            await browser.notifications.create(notifications[i].commit_url, notificationOptions);
+            await chrome.notifications.create(notifications[i].commit_url, notificationOptions);
         }
         catch ({ message }) {
             // Firefox does not support notification buttons
             if (message.includes("buttons")) {
                 delete notificationOptions.buttons;
-                await browser.notifications.create(notifications[i].commit_url, notificationOptions);
+                await chrome.notifications.create(notifications[i].commit_url, notificationOptions);
             }
         }
     }
 }
 
 async function startup() {
-    let browser = chrome || browser;
-    let { config } = await browser.storage.local.get('config');
+    let { config } = await chrome.storage.local.get('config');
 
     if (config) {
         await setAlarm(parseFloat(config.refresh_interval));
