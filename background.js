@@ -45,7 +45,7 @@ async function onAlarmEventHandler(alarm) {
                 html_url: commits.data[i].author?.html_url,
                 avatar_url: commits.data[i].author?.avatar_url,
                 commit_url: commits.data[i].html_url,
-                branch: commits.data[i].branch
+                label: commits.data[i].label
             })
         }
 
@@ -60,7 +60,7 @@ async function onAlarmEventHandler(alarm) {
 
         // Set new commits badge count & title
         updateBrowserActionBadgeText(notifications.length);
-        setBrowserActionBadgeTitle(config.updated);
+        setBrowserActionBadgeTitle(Date.now());
 
         // Create notifications
         createNewCommitNotifications(notifications);
@@ -85,6 +85,14 @@ async function setBrowserActionBadgeTitle(updated) {
 async function setBrowserActionBadgeText(text, backgroundColor, textColor) {
     let bColor = backgroundColor || '#28a745';
     let tColor = textColor || 'white';
+
+    let badgeText = await chrome.action.getBadgeText({});
+    if (badgeText.length > 0) {
+        try {
+            text = (parseInt(badgeText) + parseInt(text)).toString();
+        }
+        catch { }
+    }
     await chrome.action.setBadgeText({ text });
     await chrome.action.setBadgeBackgroundColor({ color: bColor });
     await chrome.action.setBadgeTextColor({ color: tColor });
@@ -106,7 +114,7 @@ async function createNewCommitNotifications(notifications) {
         let notificationOptions = {
             type: 'basic',
             iconUrl: notifications[i].avatar_url,
-            title: notifications[i].branch,
+            title: notifications[i].label,
             message: notifications[i].message,
             contextMessage: notifications[i].login + ' ' + (new Date(notifications[i].date)).toLocaleString(),
             buttons: [{ title: 'View Commit' }],
@@ -131,5 +139,6 @@ async function startup() {
 
     if (config) {
         await setAlarm(parseFloat(config.refresh_interval));
+        await onAlarmEventHandler({});
     }
 }

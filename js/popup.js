@@ -13,7 +13,7 @@
     await clearBadgeText();
 
     for (let i = 0; i < data.length; i++) {
-        let { login, name, date, message, html_url, avatar_url, branch, commit_url } = data[i];
+        let { avatar_url, commit_url, date, html_url, label, login, message, name } = data[i];
         let template = document.querySelector("#commititem");
         const clone = template.content.cloneNode(true);
 
@@ -28,6 +28,7 @@
             authorEl.querySelector('a').innerHTML = login;
             authorEl.querySelector('a').href = html_url;
             authorEl.querySelector('img').src = avatar_url;
+            authorEl.querySelector('img').title = name;
         }
         else {
             authorEl.querySelector('a').innerHTML = name;
@@ -37,7 +38,7 @@
         let commitDate = (new Date(date)).toLocaleString();
         authorEl.querySelector('span.date').innerHTML = commitDate;
         authorEl.querySelector('span.date').title = commitDate;
-        branchEl.innerHTML = branch;
+        branchEl.innerHTML = label;
 
         document.querySelector('main').appendChild(clone);
     }

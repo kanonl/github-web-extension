@@ -1,18 +1,10 @@
 const
     GITHUB = 'https://api.github.com',
-    VERSION = '2022-11-28',
-    ORGANIZATION = 'tcp-software',
-    REPOSITORY = 'TIMECO';
+    VERSION = '2022-11-28'
 
 const getFetchUrl = (action) => {
     let url = new URL(GITHUB);
     url.pathname = action;
-    return url;
-}
-
-const getFetchUrl2 = (action, track) => {
-    let url = new URL(GITHUB);
-    url.pathname = `repos/${track.organization}/${track.repository}/${action}`;
     return url;
 }
 
@@ -23,7 +15,7 @@ const getFetchOptions = (config) => {
             'Accept': 'application/vnd.github+json',
             'Authorization': `Bearer ${config.access_token}`,
             'X-GitHub-Api-Version': VERSION,
-            'User-Agent': config.username
+            'User-Agent': config.username || 'kano.onl'
         }
     };
 }
@@ -49,11 +41,13 @@ const getRepositories = async (config) => {
 
 const getCommits = async (config) => {
     let json = { ok: true, data: [] };
+
     for (let i = 0; i < config.track.length; i++) {
-        let url = getFetchUrl2('commits', config.track[i]);
+        let { repository, branch } = config.track[i];
+        let url = getFetchUrl(`repos/${repository}/commits`);
         let params = new URLSearchParams();
         params.set('since', getSinceDate(-7));
-        params.set('sha', config.track[i].branch);
+        params.set('sha', branch);
         // params.set('author', 'GitHub username or email address to use to filter by commit author');
         // params.set('committer', 'GitHub username or email address to use to filter by commit committer');
         // params.set('until', 'YYYY-MM-DDTHH:MM:SSZ');
@@ -65,17 +59,17 @@ const getCommits = async (config) => {
         if (x.ok) {
             x.data.forEach(d => {
                 let b = [];
-                b.push(config.track[i].organization);
                 b.push(config.track[i].repository);
                 if (config.track[i].branch.length > 0) {
                     b.push(config.track[i].branch);
                 }
-                d.branch = b.join('/');
+                d.label = b.join('/');
             });
             json.ok = true;
             json.data = [...json.data, ...x.data];
         }
     }
+
     return json;
 }
 
@@ -90,16 +84,12 @@ const getBranches = async (repository, config) => {
     let json = await sendRequest(url, config);
     return json;
 }
-const getBranches2 = async (config) => {
-    let url = getFetchUrl2('branches', config.track[0]);
-    let params = new URLSearchParams();
-    // params.set('protected', true);
-    // params.set('per_page', 30);
-    // params.set('page', 1);
-    url.search = params;
 
-    let json = await sendRequest(url, config);
-    return json;
+const getUser = async (config) => {
+    let url = getFetchUrl('user');
+    let response = await fetch(url, getFetchOptions(config));
+    let user = await response.json();
+    return user;
 }
 
 const sendRequest = async (url, config) => {
@@ -138,4 +128,9 @@ const sendRequest = async (url, config) => {
     }
 }
 
-export { getCommits, getBranches, getRepositories };
+export {
+    getCommits,
+    getBranches,
+    getRepositories,
+    getUser
+};

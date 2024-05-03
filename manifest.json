@@ -4,7 +4,7 @@
       "id": "github-web-ext@kan.onl"
     }
   },
-  "name": "GitHub Event Popup",
+  "name": "GitHub CommitSpy",
   "description": "You can save small groups of meaningful changes as commits.",
   "version": "1.0",
   "manifest_version": 3,
@@ -22,7 +22,7 @@
   },
   "options_page": "options.html",
   "action": {
-    "default_title": "GitHub Event",
+    "default_title": "GitHub CommitSpy",
     "default_popup": "popup.html",
     "default_icon": {
       "16": "icons/github-mark.png",
