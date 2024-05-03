@@ -1,11 +1,6 @@
 {
-  "browser_specific_settings": {
-    "gecko": {
-      "id": "github-web-ext@kan.onl"
-    }
-  },
   "name": "GitHub CommitSpy",
-  "description": "You can save small groups of meaningful changes as commits.",
+  "description": "Stay up-to-date on your GitHub commits.",
   "version": "1.0",
   "manifest_version": 3,
   "permissions": [
@@ -14,9 +9,6 @@
     "storage"
   ],
   "background": {
-    "scripts": [
-      "background.js"
-    ],
     "service_worker": "background.js",
     "type": "module"
   },
