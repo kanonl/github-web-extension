@@ -39,9 +39,9 @@
             </div>
 
             <h2>Tracking</h2>
-            <button type="button" id="addRepo" class="btn mb-3"><i style="color: green; font-weight: bold;" class="bi bi-plus-circle"></i></button>
+            <button type="button" id="addRepo" class="btn mb-3"><i style="color: green; font-weight: bold;"
+                    class="bi bi-plus-circle"></i></button>
             <div class="repos">
-
             </div>
 
             <button type="submit" class="btn btn-primary">Save</button>
@@ -51,20 +51,16 @@
     <template id="reporow">
         <div class="row">
             <div class="col">
-                <label class="form-label d-block">Organization
-                    <input type="text" name="organization" class="form-control organization"></label>
+                <label>Repository
+                    <select class="form-select repository"></select></label>
             </div>
             <div class="col">
-                <label class="form-label d-block">Repository
-                    <input type="text" name="repository" class="form-control repository"></label>
+                <label>Branch
+                    <select class="form-select branch"></select></label>
             </div>
             <div class="col">
-                <label class="form-label d-block">Branch
-                    <input type="text" name="branch" class="form-control branch" placeholder="optional"></label>
-                <div class="form-text sha"></div>
-            </div>
-            <div class="col">
-                <button type="button" class="btn removeRepo"><i style="color: red; font-weight: bold;" class="bi bi-x-circle"></i></button>
+                <button type="button" class="btn removeRepo"><i style="color: red; font-weight: bold;"
+                        class="bi bi-x-circle"></i></button>
             </div>
         </div>
     </template>

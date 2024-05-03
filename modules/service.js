@@ -6,7 +6,7 @@ const
 
 const getFetchUrl = (action) => {
     let url = new URL(GITHUB);
-    url.pathname = `repos/${ORGANIZATION}/${REPOSITORY}/${action}`;
+    url.pathname = action;
     return url;
 }
 
@@ -31,6 +31,20 @@ const getFetchOptions = (config) => {
 const getSinceDate = (days) => {
     let d = new Date();
     return new Date(d.setDate(d.getDate() + days)).toISOString();
+}
+
+const getRepositories = async (config) => {
+    let json = { ok: true, data: [] };
+    let url = getFetchUrl('user/repos');
+    let response = await sendRequest(url, config);
+
+    if (!response.ok) {
+        return response;
+    }
+
+    json.data = response.data;
+
+    return json;
 }
 
 const getCommits = async (config) => {
@@ -65,8 +79,19 @@ const getCommits = async (config) => {
     return json;
 }
 
-const getBranches = async (config) => {
-    let url = getFetchUrl('branches');
+const getBranches = async (repository, config) => {
+    let url = getFetchUrl(`repos/${repository}/branches`);
+    let params = new URLSearchParams();
+    // params.set('protected', true);
+    // params.set('per_page', 30);
+    // params.set('page', 1);
+    url.search = params;
+
+    let json = await sendRequest(url, config);
+    return json;
+}
+const getBranches2 = async (config) => {
+    let url = getFetchUrl2('branches', config.track[0]);
     let params = new URLSearchParams();
     // params.set('protected', true);
     // params.set('per_page', 30);
@@ -113,4 +138,4 @@ const sendRequest = async (url, config) => {
     }
 }
 
-export { getCommits, getBranches };
+export { getCommits, getBranches, getRepositories };
