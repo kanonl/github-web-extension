@@ -14,14 +14,6 @@
     <div class="container">
         <h1>options</h1>
         <form role="form">
-            <div class="mb-3 d-none">
-                <label for="api" class="form-label">API</label>
-                <input type="text" id="api" class="form-control" value="https://api.github.com" readonly>
-            </div>
-            <div class="mb-3 d-none">
-                <label for="version" class="form-label">Version</label>
-                <input type="text" id="version" class="form-control" value="2022-11-28" readonly>
-            </div>
             <div class="mb-3">
                 <label for="accesstoken" class="form-label">Personal access tokens (classic)</label>
                 <div class="input-group access-token">
@@ -47,11 +39,12 @@
             </div>
 
             <h2>repository/branch</h2>
+
             <button type="button" id="addRepo" class="btn mb-3"><i
                     style="color: green; font-weight: bold; font-size: xx-large;"
                     class="bi bi-plus-circle"></i></button>
-            <div class="repos">
-            </div>
+
+            <div class="repos"></div>
 
             <button type="submit" class="btn btn-primary">Save</button>
         </form>
