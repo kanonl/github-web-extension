@@ -86,16 +86,6 @@ async function setBrowserActionBadgeText(text, backgroundColor, textColor) {
     let bColor = backgroundColor || '#28a745';
     let tColor = textColor || 'white';
 
-    if (!isNaN(text)) {
-        let badgeText = await chrome.action.getBadgeText({});
-        if (!isNaN(badgeText.trim())) {
-            try {
-                text = (parseInt(badgeText) + parseInt(text)).toString();
-            }
-            catch { }
-        }
-    }
-    
     await chrome.action.setBadgeText({ text });
     await chrome.action.setBadgeBackgroundColor({ color: bColor });
     await chrome.action.setBadgeTextColor({ color: tColor });
@@ -103,7 +93,12 @@ async function setBrowserActionBadgeText(text, backgroundColor, textColor) {
 
 async function updateBrowserActionBadgeText(count) {
     if (count > 0) {
-        await setBrowserActionBadgeText(count.toString());
+        let badgeText = await chrome.action.getBadgeText({});
+        if (badgeText.length > 0) {
+            count += parseInt(badgeText);
+        }
+
+        await setBrowserActionBadgeText(isNaN(count) ? '' : count.toString());
     }
 }
 
