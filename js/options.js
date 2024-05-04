@@ -9,11 +9,11 @@ async function loadBranches(e) {
     let branches = await getBranches(e.target.value, config);
     let select = this.parentNode.parentNode.parentNode.querySelector('.form-select.branch');
     if (branches.ok) {
-        select.innerHTML = '';
+        select.textContent = '';
         branches.data.forEach(({ name, commit: { sha } }) => {
             let o = document.createElement('option');
             o.value = sha;
-            o.innerHTML = name;
+            o.textContent = name;
             select.appendChild(o);
         });
     }
@@ -37,7 +37,7 @@ async function addRow() {
         repositories.data.forEach(({ full_name }) => {
             let o = document.createElement('option');
             o.value = full_name;
-            o.innerHTML = full_name;
+            o.textContent = full_name;
             clone.querySelector('.form-select.repository').appendChild(o);
             clone.querySelector('.form-select.repository').addEventListener('change', loadBranches);
         });
@@ -71,7 +71,7 @@ async function save(event) {
 
 async function setLogin(login) {
     let addon = document.querySelector('.input-group.access-token .input-group-text');
-    addon.innerHTML = login;
+    addon.textContent = login;
     addon.removeAttribute('hidden');
 }
 
@@ -94,7 +94,7 @@ async function pageLoad() {
                 repositories.data.forEach(({ full_name }) => {
                     let o = document.createElement('option');
                     o.value = full_name;
-                    o.innerHTML = full_name;
+                    o.textContent = full_name;
                     clone.querySelector('.form-select.repository').appendChild(o);
                     clone.querySelector('.form-select.repository').addEventListener('change', loadBranches);
                 }); clone.querySelector('.repository').value = repository;
@@ -104,7 +104,7 @@ async function pageLoad() {
                     branches.data.forEach(({ name, commit }) => {
                         let o = document.createElement('option');
                         o.value = commit.sha;
-                        o.innerHTML = name;
+                        o.textContent = name;
                         if (commit.sha == sha) {
                             o.setAttribute('selected', 'selected');
                         }
