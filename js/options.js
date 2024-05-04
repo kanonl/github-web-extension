@@ -57,7 +57,7 @@ async function save(event) {
     let track = await getRepositoryData();
 
     if (username.length == 0) {
-        console.log('username not found.');
+        console.log('login not found.');
         return;
     }
 
