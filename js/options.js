@@ -88,7 +88,7 @@ async function pageLoad() {
 
         if (config.track?.length > 0) {
             let template = document.querySelector("#reporow");
-            config.track.forEach(async ({ repository, sha }) => {
+            config.track.forEach(async ({ repository, branch }) => {
                 const clone = template.content.cloneNode(true);
 
                 repositories.data.forEach(({ full_name }) => {
@@ -105,7 +105,7 @@ async function pageLoad() {
                         let o = document.createElement('option');
                         o.value = commit.sha;
                         o.textContent = name;
-                        if (commit.sha == sha) {
+                        if (name == branch) {
                             o.setAttribute('selected', 'selected');
                         }
                         clone.querySelector('.form-select.branch').appendChild(o);
