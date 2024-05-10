@@ -94,7 +94,8 @@ async function setBrowserActionBadgeText(text, backgroundColor, textColor) {
 async function updateBrowserActionBadgeText(count) {
     if (count > 0) {
         let badgeText = await chrome.action.getBadgeText({});
-        if (badgeText.length > 0) {
+        if (badgeText && badgeText.length > 0) {
+            console.log('count', `>${count}<`, 'badgeText', `>${badgeText}<`);
             count += parseInt(badgeText);
         }
 
