@@ -37,6 +37,11 @@ async function onAlarmEventHandler(alarm) {
     if (commits.ok) {
         let data = [];
         for (let i = 0; i < commits.data.length; i++) {
+
+            if (commits.data[i].commit.verification.verified) {
+                continue;
+            }
+
             data.push({
                 login: commits.data[i].author?.login,
                 name: commits.data[i].commit.author?.name,
