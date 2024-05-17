@@ -1,0 +1,13 @@
+.form-select.repository,
+.form-select.branch {
+    max-width: 512px;
+}
+
+input.color {
+    width: 32px;
+}
+
+i.bi.bi-x-circle,
+i.bi.bi-plus-circle {
+    font-size: xx-large;
+}

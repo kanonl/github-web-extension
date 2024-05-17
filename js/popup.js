@@ -2,7 +2,7 @@
 
 (async () => {
 
-    let { data } = await chrome.storage.local.get('data');
+    let { config, data } = await chrome.storage.local.get(['config', 'data']);
 
     if (!data) {
         chrome.runtime.openOptionsPage();
@@ -39,6 +39,7 @@
         authorEl.querySelector('span.date').textContent = commitDate;
         authorEl.querySelector('span.date').title = commitDate;
         branchEl.textContent = label;
+        branchEl.style.backgroundColor = config.track.find(x => label == `${x.repository}/${x.branch}`).color + '40';
 
         document.querySelector('main').appendChild(clone);
     }

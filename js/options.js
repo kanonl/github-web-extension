@@ -88,7 +88,7 @@ async function pageLoad() {
 
         if (config.track?.length > 0) {
             let template = document.querySelector("#reporow");
-            config.track.forEach(async ({ repository, branch }) => {
+            config.track.forEach(async ({ repository, branch, color }) => {
                 const clone = template.content.cloneNode(true);
 
                 repositories.data.forEach(({ full_name }) => {
@@ -111,6 +111,8 @@ async function pageLoad() {
                         clone.querySelector('.form-select.branch').appendChild(o);
                     });
                 }
+
+                clone.querySelector('.color').value = color;
 
                 clone.querySelector('.removeRepo').addEventListener('click', (event) => removeRow(event.target.parentNode));
 
@@ -141,12 +143,13 @@ const getRepositoryData = async () => {
         let repository = row.querySelector('.form-select.repository').value;
         let sha = row.querySelector('.form-select.branch').value;
         let branch = row.querySelector('.form-select.branch').options[row.querySelector('.form-select.branch').selectedIndex].text;
+        let color = row.querySelector('.color').value;
 
         if (sha.length == 0 || repository.length == 0) {
             return;
         }
 
-        repos.push({ repository, branch, sha });
+        repos.push({ repository, branch, sha, color });
     });
 
     return repos;
