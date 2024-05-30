@@ -46,7 +46,7 @@ const getCommits = async (config) => {
         let { repository, branch } = config.track[i];
         let url = getFetchUrl(`repos/${repository}/commits`);
         let params = new URLSearchParams();
-        params.set('since', getSinceDate(-7));
+        params.set('since', getSinceDate(config.since * -1));
         params.set('sha', branch);
         // params.set('author', 'GitHub username or email address to use to filter by commit author');
         // params.set('committer', 'GitHub username or email address to use to filter by commit committer');
@@ -100,7 +100,7 @@ const sendRequest = async (url, config) => {
         while (moreResults) {
             let response = await fetch(url, getFetchOptions(config));
             if (!response.ok)
-                throw new Error(response.statusText);
+                throw new Error((await response.json()).message);
 
             let json = await response.json();
             data = [...data, ...json];

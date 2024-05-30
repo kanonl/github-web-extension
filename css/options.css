@@ -11,3 +11,9 @@ i.bi.bi-x-circle,
 i.bi.bi-plus-circle {
     font-size: xx-large;
 }
+
+.alert {
+    opacity: 1;
+    transition-duration: 500ms;
+    transition-property: opacity;
+}

@@ -53,6 +53,7 @@ async function save(event) {
     document.querySelector("#username").value = (await getUser({ access_token })).login
     let username = document.querySelector("#username").value;
     let refresh_interval = parseInt(document.querySelector("#interval").value);
+    let since = parseInt(document.querySelector("#since").value);
     let updated = Date.now();
     let track = await getRepositoryData();
 
@@ -61,12 +62,14 @@ async function save(event) {
         return;
     }
 
-    let config = { access_token, username, refresh_interval, track, updated };
+    let config = { access_token, username, refresh_interval, track, updated, since };
 
     await chrome.storage.local.set({ config });
     await chrome.runtime.sendMessage({ sender: 'options', event: 'OPTIONS_SAVE' });
 
     console.log(config);
+
+    showAlert('Configuration saved.', 'alert-success');
 }
 
 async function setLogin(login) {
@@ -75,15 +78,52 @@ async function setLogin(login) {
     addon.removeAttribute('hidden');
 }
 
+async function showAlert(text, alertType = 'alert-primary') {
+    let alert = document.querySelector('.alerts');
+    alert.className = `alert ${alertType}`;
+    alert.textContent = text;
+
+    clearAlert(alert, 4000);
+}
+
+async function clearAlert(alert, timeout) {
+    setTimeout(function () { alert.style.opacity = 0; }, 3500);
+    setTimeout(function () {
+        alert.className = 'alerts';
+        alert.textContent = '';
+        alert.style.opacity = 1;
+    }, timeout);
+}
+
 async function pageLoad() {
+    document.querySelector('#button-addon').addEventListener('click', async function (e) {
+        e.preventDefault();
+        let access_token = document.querySelector("#accesstoken").value;
+        if (access_token.length == 0) {
+            return;
+        }
+        let user = await getUser({ access_token });
+        if (user.login) {
+            setLogin(user.login);
+        }
+        else {
+            showAlert(user.message, 'alert-danger');
+        }
+    });
+
     config = (await chrome.storage.local.get('config')).config;
 
     if (config) {
         repositories = await getRepositories(config);
+        if (!repositories.ok) {
+            showAlert(repositories.error.message, 'alert-danger');
+            return;
+        }
 
         document.querySelector("#accesstoken").value = config.access_token;
         document.querySelector("#username").value = config.username;
         document.querySelector("#interval").value = config.refresh_interval;
+        document.querySelector("#since").value = config.since;
         setLogin(config.username);
 
         if (config.track?.length > 0) {
@@ -122,17 +162,6 @@ async function pageLoad() {
     }
 
     document.querySelector('#addRepo').addEventListener('click', addRow);
-    document.querySelector('#button-addon').addEventListener('click', async function (e) {
-        e.preventDefault();
-        let access_token = document.querySelector("#accesstoken").value;
-        if (access_token.length == 0) {
-            return;
-        }
-        let { login } = await getUser({ access_token });
-        if (login) {
-            setLogin(login);
-        }
-    });
 }
 
 const getRepositoryData = async () => {
