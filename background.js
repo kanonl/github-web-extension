@@ -2,7 +2,7 @@
 
 import { getCommits } from './modules/service.js';
 
-(async () => await startup())();
+chrome.runtime.onStartup.addListener(startup);
 
 chrome.runtime.onMessage.addListener(async function (request, sender, sendResponse) {
     let { config } = await chrome.storage.local.get('config');
